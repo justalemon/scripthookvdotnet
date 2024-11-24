@@ -75,6 +75,12 @@ private enum class ModifierKeyState
 public ref class ScriptHookVDotNet // This is not a static class, so that console scripts can inherit from it for ConsoleInput class
 {
 public:
+    static SHVDN::Console^ GetConsole()
+    {
+        msclr::lock l(ScriptHookVDotNet::variablesLockForScriptDomain);
+        return console;
+    }
+
     [SHVDN::ConsoleCommand("Print the default help")]
     static void Help()
     {
@@ -253,11 +259,6 @@ internal:
 
     // Although static variables are not shared between `AppDomain`s, we need to use a lock because the keyboard
     // message thread may want to request the script domain to instant reload.
-    static SHVDN::Console^ GetConsole()
-    {
-        msclr::lock l(ScriptHookVDotNet::variablesLockForScriptDomain);
-        return console;
-    }
     static void SetConsole()
     {
         msclr::lock l(ScriptHookVDotNet::variablesLockForScriptDomain);
@@ -497,7 +498,7 @@ static void LogKeyBindingParseError(String^ rawInput, InvalidKeysFoundError^ inv
 
 static void ScriptHookVDotNet_ManagedInit()
 {
-    SHVDN::ScriptDomain^ domain = nullptr; 
+    SHVDN::ScriptDomain^ domain = nullptr;
     SHVDN::Console^ console = nullptr;
     List<String^>^ stashedConsoleCommandHistory = gcnew List<String^>();
     List<ScriptHookVDotNet::LogMessageInfo>^ pendingLogMessageInfo = gcnew List<ScriptHookVDotNet::LogMessageInfo>();
