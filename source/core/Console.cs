@@ -192,7 +192,8 @@ namespace SHVDN
         {
             for (int i = 0; i < messages.Length; i++) // Add proper styling
             {
-                messages[i] = $"~c~[{DateTime.Now.ToString("HH:mm:ss")}] ~w~{prefix} {color}{messages[i]}";
+                string msg = messages[i].Replace("~", "\\~");
+                messages[i] = $"~c~[{DateTime.Now.ToString("HH:mm:ss")}] ~w~{prefix} {color}{msg}";
             }
 
             _outputQueue.Enqueue(messages);
