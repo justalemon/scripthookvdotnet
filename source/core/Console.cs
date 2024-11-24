@@ -178,9 +178,10 @@ namespace SHVDN
         /// </summary>
         /// <param name="prefix">The prefix for each line.</param>
         /// <param name="messages">The lines to add to the console.</param>
-        private void AddLines(string prefix, string[] messages)
+        /// <param name="escape">If the tildes should be escaped or not.</param>
+        private void AddLines(string prefix, string[] messages, bool escape)
         {
-            AddLines(prefix, messages, "~w~");
+            AddLines(prefix, messages, "~w~", escape);
         }
         /// <summary>
         /// Add colored text lines to the console. This call is thread-safe.
@@ -188,11 +189,12 @@ namespace SHVDN
         /// <param name="prefix">The prefix for each line.</param>
         /// <param name="messages">The lines to add to the console.</param>
         /// <param name="color">The color of those lines.</param>
-        private void AddLines(string prefix, string[] messages, string color)
+        /// <param name="escape">If the tildes should be escaped or not.</param>
+        private void AddLines(string prefix, string[] messages, string color, bool escape)
         {
             for (int i = 0; i < messages.Length; i++) // Add proper styling
             {
-                string msg = messages[i].Replace("~", "\\~");
+                string msg = escape ? messages[i].Replace("~", "\\~") : messages[i];
                 messages[i] = $"~c~[{DateTime.Now.ToString("HH:mm:ss")}] ~w~{prefix} {color}{msg}";
             }
 
@@ -253,67 +255,73 @@ namespace SHVDN
         /// Writes an info message to the console.
         /// </summary>
         /// <param name="msg">The composite format string.</param>
-        public void PrintInfo(string msg)
+        /// <param name="escape">If the tildes should be escaped or not.</param>
+        public void PrintInfo(string msg, bool escape)
         {
-            AddLines("[~b~INFO~w~] ", msg.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries));
+            AddLines("[~b~INFO~w~] ", msg.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries), escape);
         }
         /// <summary>
         /// Writes an info message to the console.
         /// </summary>
         /// <param name="msg">The composite format string.</param>
+        /// <param name="escape">If the tildes should be escaped or not.</param>
         /// <param name="args">The formatting arguments.</param>
-        public void PrintInfo(string msg, params object[] args)
+        public void PrintInfo(string msg, bool escape, params object[] args)
         {
             if (args.Length > 0)
             {
                 msg = String.Format(msg, args);
             }
 
-            AddLines("[~b~INFO~w~] ", msg.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries));
+            AddLines("[~b~INFO~w~] ", msg.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries), escape);
         }
         /// <summary>
         /// Writes an error message to the console.
         /// </summary>
         /// <param name="msg">The composite format string.</param>
-        public void PrintError(string msg)
+        /// <param name="escape">If the tildes should be escaped or not.</param>
+        public void PrintError(string msg, bool escape)
         {
-            AddLines("[~r~ERROR~w~] ", msg.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries));
+            AddLines("[~r~ERROR~w~] ", msg.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries), escape);
         }
         /// <summary>
         /// Writes an error message to the console.
         /// </summary>
         /// <param name="msg">The composite format string.</param>
+        /// <param name="escape">If the tildes should be escaped or not.</param>
         /// <param name="args">The formatting arguments.</param>
-        public void PrintError(string msg, params object[] args)
+        public void PrintError(string msg, bool escape, params object[] args)
         {
             if (args.Length > 0)
             {
                 msg = String.Format(msg, args);
             }
 
-            AddLines("[~r~ERROR~w~] ", msg.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries));
+            AddLines("[~r~ERROR~w~] ", msg.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries), escape);
         }
         /// <summary>
         /// Writes a warning message to the console.
         /// </summary>
         /// <param name="msg">The composite format string.</param>
-        public void PrintWarning(string msg)
+        /// <param name="escape">If the tildes should be escaped or not.</param>
+        public void PrintWarning(string msg, bool escape)
         {
-            AddLines("[~o~WARNING~w~] ", msg.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries));
+            AddLines("[~o~WARNING~w~] ", msg.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries), escape);
         }
         /// <summary>
         /// Writes a warning message to the console.
         /// </summary>
         /// <param name="msg">The composite format string.</param>
+        /// <param name="escape">If the tildes should be escaped or not.</param>
         /// <param name="args">The formatting arguments.</param>
-        public void PrintWarning(string msg, params object[] args)
+        public void PrintWarning(string msg, bool escape, params object[] args)
         {
             if (args.Length > 0)
             {
                 msg = String.Format(msg, args);
             }
 
-            AddLines("[~o~WARNING~w~] ", msg.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries));
+            AddLines("[~o~WARNING~w~] ", msg.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries), escape);
         }
 
         /// <summary>
@@ -352,7 +360,7 @@ namespace SHVDN
                 }
             }
 
-            PrintInfo(help.ToString());
+            PrintInfo(help.ToString(), false);
         }
         /// <summary>
         /// Writes the help text for the specified command to the console.
@@ -371,7 +379,7 @@ namespace SHVDN
                             continue;
                         }
 
-                        PrintInfo(command.Name + ": " + command.Help);
+                        PrintInfo(command.Name + ": " + command.Help, false);
                         return;
                     }
                 }
@@ -400,12 +408,12 @@ namespace SHVDN
                         object result = compilerTask.Result.Invoke(null, null);
                         if (result != null)
                         {
-                            PrintInfo($"[Return Value]: {result}");
+                            PrintInfo($"[Return Value]: {result}", true);
                         }
                     }
                     catch (TargetInvocationException ex)
                     {
-                        PrintError($"[Exception]: {ex.InnerException.ToString()}");
+                        PrintError($"[Exception]: {ex.InnerException.ToString()}", true);
                     }
                 }
 
@@ -1286,7 +1294,7 @@ namespace SHVDN
                     return compilerResult.CompiledAssembly.GetType("ConsoleInput").GetMethod("Execute");
                 }
 
-                PrintError($"Couldn't compile input expression: {capturedInput}");
+                PrintError($"Couldn't compile input expression: {capturedInput}", true);
 
                 var errors = new StringBuilder();
 
@@ -1303,7 +1311,7 @@ namespace SHVDN
                     }
                 }
 
-                PrintError(errors.ToString());
+                PrintError(errors.ToString(), true);
                 return null;
             });
 

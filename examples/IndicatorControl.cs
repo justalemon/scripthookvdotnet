@@ -1,5 +1,6 @@
 using System;
 using GTA;
+using Console = GTA.Console;
 
 public class IndicatorControl : Script
 {
@@ -7,6 +8,10 @@ public class IndicatorControl : Script
     {
         Tick += OnTick;
         Interval = 100;
+
+        Console.Info("Starting with interval set to ~r~{0}", Interval);
+        Console.Warning("Starting with interval set to ~r~{0}", Interval);
+        Console.Error("Starting with interval set to ~r~{0}", Interval);
     }
 
     private readonly bool[] _active = new bool[2];

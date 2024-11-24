@@ -12,18 +12,18 @@
         /// </summary>
         /// <param name="message">The message to print.</param>
         /// <param name="args">The arguments used to format the message, if any.</param>
-        public static void Info(string message, params object[] args) => ScriptHookVDotNet.GetConsole().PrintInfo(message, args);
+        public static void Info(string message, params object[] args) => ScriptHookVDotNet.GetConsole().PrintInfo(message, true, args);
         /// <summary>
         /// Writes the specified message to the console with the level set to WARNING.
         /// </summary>
         /// <param name="message">The message to print.</param>
         /// <param name="args">The arguments used to format the message, if any.</param>
-        public static void Warning(string message, params object[] args) => ScriptHookVDotNet.GetConsole().PrintWarning(message, args);
+        public static void Warning(string message, params object[] args) => ScriptHookVDotNet.GetConsole().PrintWarning(message, true, args);
         /// <summary>
         /// Writes the specified message to the console with the level set to ERROR.
         /// </summary>
         /// <param name="message">The message to print.</param>
         /// <param name="args">The arguments used to format the message, if any.</param>
-        public static void Error(string message, params object[] args) => ScriptHookVDotNet.GetConsole().PrintError(message, args);
+        public static void Error(string message, params object[] args) => ScriptHookVDotNet.GetConsole().PrintError(message, true, args);
     }
 }

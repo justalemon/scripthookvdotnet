@@ -93,10 +93,10 @@ namespace SHVDN
             switch (level)
             {
                 case Level.Error:
-                    console.PrintError(string.Join(string.Empty, message));
+                    console.PrintError(string.Join(string.Empty, message), true);
                     break;
                 case Level.Warning:
-                    console.PrintWarning(string.Join(string.Empty, message));
+                    console.PrintWarning(string.Join(string.Empty, message), true);
                     break;
             }
         }
